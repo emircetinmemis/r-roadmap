@@ -1,0 +1,11 @@
+Hello and thank you for being here! :-) 
+
+If you missed it in the last lecture, don't forget to download the materials for the course in the link that is in the Resources. That link will be updated with new material based on updates on the course and you get lifetime access to it so feel free to add the link to your favorites!
+
+If you prefer, you can also grab the code for the first 9 chapters by downloading / cloning the GitHub Repo.
+
+Thank you for joining me and hope you have a lot of fun on your R journey!
+
+
+https://drive.google.com/drive/folders/1KC5NxvCoRjYumlHoFehjicvQYbA4E01M
+https://github.com/ivopbernardo/r-programming-absolute-beginners
