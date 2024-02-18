@@ -55,4 +55,96 @@ mtcars[(mtcars$cyl == 8 & mtcars$hp > 300),] # All 8 cylinder cars with more tha
 cyc_list <- c(4, 6)
 mtcars[mtcars$cyl %in% cyc_list,] # All 4 or 6 cylinder cars
 
-# Creating new columns
+# Modification & Creating new columns
+
+data(mtcars)
+
+mtcars$hp
+mtcars$wt
+
+# Add it as a new column
+
+mtcars$hp_per_wt <- mtcars$hp / mtcars$wt
+# or
+mtcars <- cbind(mtcars, hp_per_wt_second = mtcars$hp / mtcars$wt)
+# or
+mtcars[,"hp_per_wt_third"] <- mtcars$hp / mtcars$wt
+
+# lets reset
+data(mtcars)
+
+mtcars[,"hp_per_wt_third"] <- mtcars[,"hp"] / mtcars[,"wt"]
+
+mtcars$hp_squared <- mtcars$hp**2
+
+# transfer row names to column names
+data(mtcars)
+
+mtcars$model <- rownames(mtcars)
+rownames(mtcars) <- NULL
+
+# make model column the first column | note this is only for test.
+data(mtcars)
+models <- rownames(mtcars)
+rownames(mtcars) <- NULL
+mtcars <- cbind(models, mtcars)
+
+# before moving on lets take a look at applying family property to a data, then we will continue.
+# !!!
+# PLEASE LOOK AT APPLY.R FILE FOR APPLY PRACTICE
+# !!!
+
+# Now as we learned aplly, we will use sapply to create a new column
+data(mtcars)
+
+mtcars$model <- rownames(mtcars)
+
+# Normally, it would go like this
+models <- strsplit(x=mtcars$model, split=" ")
+
+models[[1]][1]
+models[[2]][1]
+models[[3]][1]
+
+# But we can do this
+brands <- sapply(models, function(x) {x[1]})
+# or use "[" with n=1, which means take the first element of the list
+sapply(models, "[", n=1) # But I prefer the first one, it is more readable.
+
+# Lets do a fresh example now, the above one was just a practice.
+data(mtcars)
+
+# Get an external object to work on
+car_definition <- rownames(mtcars)
+
+# Extract the brands
+brands <- sapply(
+  X = car_definition,
+  FUN = function(current_car_definition) {
+    definitives <- strsplit(x = current_car_definition, split = " ")
+    definitives[[1]][1]
+  }
+)
+
+# Extract the models
+models <- sapply(
+  X = car_definition,
+  FUN = function(current_car_definition) {
+    definitives <- strsplit(x = current_car_definition, split = " ")
+    definitives[[1]][-1]
+  }
+)
+
+# This is a good practice.
+brands <- as.factor(brands)
+models <- as.factor(models)
+
+# Delete the old row names
+rownames(mtcars) <- NULL
+
+# Add the new columns
+mtcars$brand <- brands
+mtcars$model <- models
+
+
+# Aggregation and sorting
