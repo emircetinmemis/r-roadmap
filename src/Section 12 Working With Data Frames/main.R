@@ -148,3 +148,18 @@ mtcars$model <- models
 
 
 # Aggregation and sorting
+
+# Aggregation : We can use aggregate() function to aggregate the data which means
+# we can group the data by a column and apply a function to the groups.
+
+# Lets group the data by the number of cylinders and calculate the mean of the
+# horse power and weight of the cars in each group.
+
+data(mtcars)
+
+# Group by the number of cylinders
+cyl_grouped <- aggregate(
+  x = mtcars[,c("hp", "wt")],
+  by = list(mtcars$cyl),
+  FUN = mean
+)
