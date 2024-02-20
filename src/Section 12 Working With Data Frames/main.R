@@ -149,17 +149,174 @@ mtcars$model <- models
 
 # Aggregation and sorting
 
-# Aggregation : We can use aggregate() function to aggregate the data which means
+# Aggregation : We can use aggregate() function to aggregate the data which means similar to group by in SQL,
 # we can group the data by a column and apply a function to the groups.
-
-# Lets group the data by the number of cylinders and calculate the mean of the
-# horse power and weight of the cars in each group.
 
 data(mtcars)
 
-# Group by the number of cylinders
-cyl_grouped <- aggregate(
-  x = mtcars[,c("hp", "wt")],
-  by = list(mtcars$cyl),
+# Lets also extract the additional columns needed again.
+mtcars$model <- rownames(mtcars)
+mtcars$brand <- sapply(X=strsplit(x=mtcars$model, split=" "), FUN="[", n=1)
+
+?aggregate
+
+# check the mean of the horsepower by brand
+hp_brands <- aggregate(
+  x = mtcars$hp,
+  by = list(mtcars$brand),
   FUN = mean
 )
+
+colnames(hp_brands) <- c("brand", "mean_hp")
+
+hp_brands[order(hp_brands$mean_hp, decreasing = TRUE),]
+
+# check the mean of the horsepower by gear
+hp_gears <- aggregate(
+  x = mtcars$hp,
+  by = list(mtcars$gear),
+  FUN = mean
+)
+
+# Merging data frames - Table joining !
+
+# Inner Join : We get the intersection of the two tables
+# Full Join : We get the union of the two tables
+# Left Join : We get the left table and the intersection of the two tables
+# Right Join : We get the right table and the intersection of the two tables
+
+data(mtcars)
+
+# Lets also extract the additional columns needed again.
+mtcars$brand <- sapply(X=strsplit(x=rownames(mtcars), split=" "), FUN="[", n=1)
+
+# Add the car model column
+mtcars$car_model <- rownames(mtcars)
+
+# Create a origin table also
+brands_origin = data.frame(
+  brand = c("Mazda", "Toyota", "Fiat", "Volvo", "Skoda"),
+  country = c("Japan", "Japan", "Italy", "Sweden", "Czech Republic")
+)
+
+# Inner Join
+mtcars_origin <- merge(
+  x = mtcars,
+  y = brands_origin,
+  by = "brand"
+)
+
+# Left Join
+mtcars_origin_left <- merge(
+  x = mtcars,
+  y = brands_origin,
+  by = "brand",
+  all.x = TRUE
+)
+
+# Right Join
+mtcars_origin_right <- merge(
+  x = mtcars,
+  y = brands_origin,
+  by = "brand",
+  all.y = TRUE
+)
+
+# Full Join
+mtcars_origin_full <- merge(
+  x = mtcars,
+  y = brands_origin,
+  by = "brand",
+  all = TRUE
+)
+
+# Extra, using a sql like methodology.
+#install.packages("sqldf")
+library(sqldf)
+
+sql_df_example <- sqldf(
+  "
+  SELECT * FROM mtcars
+  WHERE hp > 100 AND wt < 3
+  "
+)
+
+# Inner Join
+sql_df_inner <- sqldf(
+  "
+  SELECT * FROM mtcars
+  INNER JOIN brands_origin
+  ON mtcars.brand = brands_origin.brand
+  "
+)
+
+# Plotting
+
+data(mtcars)
+
+# Scatter plot : We can use scatter plot to see the relationship between two variables
+plot(
+  x = mtcars$hp,
+  y = mtcars$wt,
+  xlab = "Horsepower",
+  ylab = "Weight",
+  main = "Horsepower vs Weight",
+  col = "red",
+  pch = 4,
+  cex = 2,
+  lwd = 3
+)
+
+# Bar plot : We can use bar plot to see the frequency of a categorical variable
+table(mtcars$cyl)
+barplot(
+  height = table(mtcars$cyl),
+  xlab = "Cylinders",
+  ylab = "Frequency",
+  main = "Frequency of Cylinders",
+  col = c("red", "blue", "green"),
+  border = "white"
+)
+
+# Box plot : We can use box plot to see the distribution of a continuous variable
+boxplot(
+  hp~gear,
+  data = mtcars,
+  xlab = "Gears",
+  ylab = "Horsepower",
+  main = "Horsepower by Gears"
+)
+
+# Histogram : We can use histogram to see the distribution of a continuous variable
+hist(
+  mtcars$hp,
+  xlab = "Horsepower",
+  ylab = "Frequency",
+  main = "Frequency of Horsepower",
+  col = "red",
+  border = "white"
+)
+
+# Moving to ggplot2, easier and more powerful than base R
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+?ggplot
+
+ggplot()
+
+ggplot(
+  data = mtcars,
+  mapping = aes(x = hp)
+) + geom_histogram(
+  binwidth = 50,
+  fill = "red",
+  color = "white"
+)
+
+ggplot(
+  data = mtcars,
+  mapping = aes(x = hp, y = wt)
+) + geom_point()
+
